@@ -94,13 +94,13 @@ namespace Nikse.SubtitleEdit.Forms
             textBoxIfoFileName.Text = fileName;
 
             // List vob files
-            string path = Path.GetDirectoryName(fileName);
-            string onlyFileName = Path.GetFileNameWithoutExtension(fileName);
-            string searchPattern = onlyFileName.Substring(0, onlyFileName.Length - 1) + "?.VOB";
+            var path = Path.GetDirectoryName(fileName);
+            var onlyFileName = Path.GetFileNameWithoutExtension(fileName);
+            var searchPattern = onlyFileName.Substring(0, onlyFileName.Length - 1) + "?.VOB";
             listBoxVobFiles.Items.Clear();
-            for (int i = 1; i < 30; i++)
+            for (var i = 1; i < 30; i++)
             {
-                string vobFileName = searchPattern.Replace("?", i.ToString(CultureInfo.InvariantCulture));
+                var vobFileName = searchPattern.Replace("?", i.ToString(CultureInfo.InvariantCulture));
                 if (File.Exists(Path.Combine(path, vobFileName)))
                 {
                     listBoxVobFiles.Items.Add(Path.Combine(path, vobFileName));
@@ -110,9 +110,9 @@ namespace Nikse.SubtitleEdit.Forms
             if (listBoxVobFiles.Items.Count == 0)
             {
                 searchPattern = onlyFileName.Substring(0, onlyFileName.Length - 1) + "PGC_01_?.VOB";
-                for (int i = 1; i < 30; i++)
+                for (var i = 1; i < 30; i++)
                 {
-                    string vobFileName = searchPattern.Replace("?", i.ToString(CultureInfo.InvariantCulture));
+                    var vobFileName = searchPattern.Replace("?", i.ToString(CultureInfo.InvariantCulture));
                     if (File.Exists(Path.Combine(path, vobFileName)))
                     {
                         listBoxVobFiles.Items.Add(Path.Combine(path, vobFileName));
@@ -138,7 +138,7 @@ namespace Nikse.SubtitleEdit.Forms
 
                 // List info
                 labelIfoFile.Text = _language.IfoFile + ": " + ifoParser.VideoTitleSetVobs.VideoStream.Resolution;
-                bool isPal = ifoParser.VideoTitleSetVobs.VideoStream.Standard.Equals("PAL", StringComparison.OrdinalIgnoreCase);
+                var isPal = ifoParser.VideoTitleSetVobs.VideoStream.Standard.Equals("PAL", StringComparison.OrdinalIgnoreCase);
                 if (isPal)
                 {
                     radioButtonPal.Checked = true;
@@ -150,7 +150,7 @@ namespace Nikse.SubtitleEdit.Forms
 
                 // List languages
                 comboBoxLanguages.Items.Clear();
-                foreach (string s in ifoParser.VideoTitleSetVobs.GetAllLanguages())
+                foreach (var s in ifoParser.VideoTitleSetVobs.GetAllLanguages())
                 {
                     comboBoxLanguages.Items.Add(s);
                 }
@@ -179,6 +179,7 @@ namespace Nikse.SubtitleEdit.Forms
                 buttonStartRipping.Text = _language.StartRipping;
                 return;
             }
+
             _abort = false;
             buttonStartRipping.Text = _language.Abort;
             _lastPresentationTimestamp = 0;
@@ -188,7 +189,7 @@ namespace Nikse.SubtitleEdit.Forms
 
             progressBarRip.Visible = true;
             var ms = new MemoryStream();
-            int i = 0;
+            var i = 0;
             foreach (string vobFileName in listBoxVobFiles.Items)
             {
                 i++;
@@ -220,7 +221,7 @@ namespace Nikse.SubtitleEdit.Forms
             ms.Close();
             labelStatus.Text = string.Empty;
 
-            MergedVobSubPacks = vobSub.MergeVobSubPacks(); // Merge splitted-packs to whole-packs
+            MergedVobSubPacks = vobSub.MergeVobSubPacks(); // Merge split packs to whole packs
             if (MergedVobSubPacks.Count == 0)
             {
                 MessageBox.Show(LanguageSettings.Current.Main.NoSubtitlesFound);
@@ -228,8 +229,10 @@ namespace Nikse.SubtitleEdit.Forms
                 buttonStartRipping.Enabled = true;
                 return;
             }
+
             Languages = new List<string>();
-            for (int k = 0; k < comboBoxLanguages.Items.Count; k++)
+            var languageCount = comboBoxLanguages.Items.Count;
+            for (var k = 0; k < languageCount; k++)
             {
                 Languages.Add(comboBoxLanguages.Items[k].ToString());
             }
@@ -255,13 +258,14 @@ namespace Nikse.SubtitleEdit.Forms
                 }
                 catch (IOException ex)
                 {
-                    var result = MessageBox.Show(string.Format("An error occured while opening file: {0}", ex.Message), string.Empty, MessageBoxButtons.RetryCancel);
+                    var result = MessageBox.Show($"An error occured while opening file: {ex.Message}", string.Empty, MessageBoxButtons.RetryCancel);
                     if (result == DialogResult.Cancel)
                     {
                         return null;
                     }
                 }
             }
+
             return fs;
         }
 
@@ -275,11 +279,11 @@ namespace Nikse.SubtitleEdit.Forms
                 long position = 0;
                 progressBarRip.Maximum = 100;
                 progressBarRip.Value = 0;
-                int lba = 0;
-                long length = fs.Length;
+                var lba = 0;
+                var length = fs.Length;
                 while (position < length && !_abort)
                 {
-                    int bytesRead = 0;
+                    var bytesRead = 0;
 
                     // Reading and test for IO errors... and allow abort/retry/ignore
                     var tryAgain = true;
@@ -290,10 +294,11 @@ namespace Nikse.SubtitleEdit.Forms
                         {
                             fs.Seek(position, SeekOrigin.Begin);
                             bytesRead = fs.Read(buffer, 0, 0x800);
+                            // packages should start with "0 0 1 186" (0000 0000 0000 0000 0000 0001 - 1011 1010)
                         }
                         catch (IOException exception)
                         {
-                            var result = MessageBox.Show(string.Format("An error occured while reading file: {0}", exception.Message), "", MessageBoxButtons.AbortRetryIgnore);
+                            var result = MessageBox.Show($"An error occurred while reading file: {exception.Message}", "", MessageBoxButtons.AbortRetryIgnore);
                             if (result == DialogResult.Abort)
                             {
                                 return;
@@ -356,6 +361,10 @@ namespace Nikse.SubtitleEdit.Forms
                                 _lastNavEndPts = vobuEPtm;
                             }
                         }
+                        else
+                        {
+                            
+                        }
                     }
                     position += 0x800;
 
@@ -366,9 +375,11 @@ namespace Nikse.SubtitleEdit.Forms
                         TaskbarList.SetProgressValue(_taskbarFormHandle, (vobNumber * 100) + progressBarRip.Value, progressBarRip.Maximum * listBoxVobFiles.Items.Count);
                         Application.DoEvents();
                     }
+
                     lba++;
                 }
             }
+
             _lastVobPresentationTimestamp = _lastPresentationTimestamp;
         }
 
@@ -378,9 +389,9 @@ namespace Nikse.SubtitleEdit.Forms
         private static void UpdatePresentationTimestamp(byte[] buffer, long addPresentationTimestamp, VobSubPack vsp)
         {
             const int presentationTimestampIndex = 23;
-            long newPts = addPresentationTimestamp + ((long)vsp.PacketizedElementaryStream.PresentationTimestamp.Value);
+            var newPts = addPresentationTimestamp + ((long)vsp.PacketizedElementaryStream.PresentationTimestamp.Value);
 
-            var buffer5B = BitConverter.GetBytes((UInt64)newPts);
+            var buffer5B = BitConverter.GetBytes((ulong)newPts);
             if (BitConverter.IsLittleEndian)
             {
                 buffer[presentationTimestampIndex + 4] = (byte)(buffer5B[0] << 1 | 0b00000001); // last 7 bits + '1'
@@ -437,6 +448,7 @@ namespace Nikse.SubtitleEdit.Forms
                     }
                 }
             }
+
             return false;
         }
 
@@ -459,8 +471,8 @@ namespace Nikse.SubtitleEdit.Forms
         {
             if (listBoxVobFiles.SelectedIndex > 0)
             {
-                int index = listBoxVobFiles.SelectedIndex;
-                string old = listBoxVobFiles.Items[index].ToString();
+                var index = listBoxVobFiles.SelectedIndex;
+                var old = listBoxVobFiles.Items[index].ToString();
                 listBoxVobFiles.Items.RemoveAt(index);
                 listBoxVobFiles.Items.Insert(index - 1, old);
                 listBoxVobFiles.SelectedIndex = index - 1;
@@ -471,8 +483,8 @@ namespace Nikse.SubtitleEdit.Forms
         {
             if (listBoxVobFiles.SelectedIndex >= 0 && listBoxVobFiles.SelectedIndex < listBoxVobFiles.Items.Count - 1)
             {
-                int index = listBoxVobFiles.SelectedIndex;
-                string old = listBoxVobFiles.Items[index].ToString();
+                var index = listBoxVobFiles.SelectedIndex;
+                var old = listBoxVobFiles.Items[index].ToString();
                 listBoxVobFiles.Items.RemoveAt(index);
                 listBoxVobFiles.Items.Insert(index + 1, old);
                 listBoxVobFiles.SelectedIndex = index + 1;
@@ -481,25 +493,27 @@ namespace Nikse.SubtitleEdit.Forms
 
         private void ButtonRemoveVob_Click(object sender, EventArgs e)
         {
-            if (listBoxVobFiles.SelectedIndex >= 0)
+            if (listBoxVobFiles.SelectedIndex < 0)
             {
-                int index = listBoxVobFiles.SelectedIndex;
-                listBoxVobFiles.Items.RemoveAt(index);
-                if (index < listBoxVobFiles.Items.Count)
-                {
-                    listBoxVobFiles.SelectedIndex = index;
-                }
-                else if (index > 0)
-                {
-                    listBoxVobFiles.SelectedIndex = index - 1;
-                }
+                return;
+            }
 
-                buttonStartRipping.Enabled = listBoxVobFiles.Items.Count > 0;
+            var index = listBoxVobFiles.SelectedIndex;
+            listBoxVobFiles.Items.RemoveAt(index);
+            if (index < listBoxVobFiles.Items.Count)
+            {
+                listBoxVobFiles.SelectedIndex = index;
+            }
+            else if (index > 0)
+            {
+                listBoxVobFiles.SelectedIndex = index - 1;
+            }
 
-                if (listBoxVobFiles.Items.Count == 0)
-                {
-                    Clear();
-                }
+            buttonStartRipping.Enabled = listBoxVobFiles.Items.Count > 0;
+
+            if (listBoxVobFiles.Items.Count == 0)
+            {
+                Clear();
             }
         }
 
@@ -514,17 +528,19 @@ namespace Nikse.SubtitleEdit.Forms
         private void TextBoxIfoFileNameDragDrop(object sender, DragEventArgs e)
         {
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (files.Length >= 1)
+            if (files.Length < 1)
             {
-                string fileName = files[0];
+                return;
+            }
 
-                var fi = new FileInfo(fileName);
-                if (fi.Length < 1024 * 1024 * 2) // max 2 mb
+            var fileName = files[0];
+
+            var fi = new FileInfo(fileName);
+            if (fi.Length < 1024 * 1024 * 2) // max 2 mb
+            {
+                if (fi.Extension.ToLowerInvariant() == ".ifo")
                 {
-                    if (fi.Extension.ToLowerInvariant() == ".ifo")
-                    {
-                        OpenIfoFile(fileName);
-                    }
+                    OpenIfoFile(fileName);
                 }
             }
         }
@@ -603,6 +619,5 @@ namespace Nikse.SubtitleEdit.Forms
             }
             _initialFileName = null;
         }
-
     }
 }

@@ -40,7 +40,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             {
                 var list = new List<string>();
                 var minCount = Math.Min(Subtitles.Count, Math.Min(SubtitleIDs.Count, SubtitleTypes.Count));
-                for (int i = 0; i < minCount; i++)
+                for (var i = 0; i < minCount; i++)
                 {
                     var ids = SubtitleIDs[i].Split(',');
                     var types = SubtitleTypes[i].Split(',');
@@ -158,7 +158,7 @@ namespace Nikse.SubtitleEdit.Core.Common
                 var buffer = new byte[12];
                 _fs.Position = 0;
                 _fs.Read(buffer, 0, 12);
-                string id = Encoding.UTF8.GetString(buffer);
+                var id = Encoding.UTF8.GetString(buffer);
                 if (id != "DVDVIDEO-VTS")
                 {
                     Error = new IfoParserError
@@ -203,7 +203,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             //retrieve audio info
             _fs.Position = 0x202; //useless but here for readability
             _vtsVobs.NumberOfAudioStreams = GetEndian(2);
-            for (int i = 0; i < _vtsVobs.NumberOfAudioStreams; i++)
+            for (var i = 0; i < _vtsVobs.NumberOfAudioStreams; i++)
             {
                 var audioStream = new AudioStream();
                 data = IntToBin(GetEndian(2), 16);
@@ -228,7 +228,7 @@ namespace Nikse.SubtitleEdit.Core.Common
             _fs.Position = 0x254;
             _vtsVobs.NumberOfSubtitles = GetEndian(2);
             _fs.Position += 2;
-            for (int i = 0; i < _vtsVobs.NumberOfSubtitles; i++)
+            for (var i = 0; i < _vtsVobs.NumberOfSubtitles; i++)
             {
                 _fs.Read(buffer, 0, 2);
                 var languageTwoLetter = new string(new[] { Convert.ToChar(buffer[0]), Convert.ToChar(buffer[1]) });

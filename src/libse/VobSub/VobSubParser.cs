@@ -142,9 +142,9 @@ namespace Nikse.SubtitleEdit.Core.VobSub
             var list = new List<VobSubMergedPack>();
             var pts = new TimeSpan();
             var ms = new MemoryStream();
-            int streamId = 0;
+            var streamId = 0;
 
-            float ticksPerMillisecond = 90.000F;
+            var ticksPerMillisecond = 90.000F;
             if (!IsPal)
             {
                 ticksPerMillisecond = 90.090F * (23.976F / 24F);
@@ -162,8 +162,10 @@ namespace Nikse.SubtitleEdit.Core.VobSub
                 }
             }
 
+            uniqueStreamIds.Sort();
+
             IdxParagraph lastIdxParagraph = null;
-            foreach (int uniqueStreamId in uniqueStreamIds) // packets must be merged in streamId order (so they don't get mixed)
+            foreach (var uniqueStreamId in uniqueStreamIds) // packets must be merged in streamId order (so they don't get mixed)
             {
                 foreach (var p in VobSubPacks)
                 {
@@ -199,18 +201,18 @@ namespace Nikse.SubtitleEdit.Core.VobSub
             ms.Close();
 
             // Remove any bad packs
-            for (int i = list.Count - 1; i >= 0; i--)
-            {
-                VobSubMergedPack pack = list[i];
-                if (pack.SubPicture == null || pack.SubPicture.ImageDisplayArea.Width <= 3 || pack.SubPicture.ImageDisplayArea.Height <= 2)
-                {
-                    list.RemoveAt(i);
-                }
-                else if (pack.EndTime.TotalSeconds - pack.StartTime.TotalSeconds < 0.1 && pack.SubPicture.ImageDisplayArea.Width <= 10 && pack.SubPicture.ImageDisplayArea.Height <= 10)
-                {
-                    list.RemoveAt(i);
-                }
-            }
+            //for (var i = list.Count - 1; i >= 0; i--)
+            //{
+            //    VobSubMergedPack pack = list[i];
+            //    if (pack.SubPicture == null || pack.SubPicture.ImageDisplayArea.Width <= 3 || pack.SubPicture.ImageDisplayArea.Height <= 2)
+            //    {
+            //        list.RemoveAt(i);
+            //    }
+            //    else if (pack.EndTime.TotalSeconds - pack.StartTime.TotalSeconds < 0.1 && pack.SubPicture.ImageDisplayArea.Width <= 10 && pack.SubPicture.ImageDisplayArea.Height <= 10)
+            //    {
+            //        list.RemoveAt(i);
+            //    }
+            //}
 
             // Fix subs with no duration (completely normal) or negative duration or duration > 10 seconds
             for (int i = 0; i < list.Count; i++)
@@ -231,7 +233,7 @@ namespace Nikse.SubtitleEdit.Core.VobSub
                             pack.EndTime = TimeSpan.FromMilliseconds(pack.StartTime.TotalMilliseconds + Configuration.Settings.General.SubtitleMaximumDisplayMilliseconds);
                         }
                     }
-                     else
+                    else
                     {
                         pack.EndTime = TimeSpan.FromMilliseconds(pack.StartTime.TotalMilliseconds + 3000);
                     }
