@@ -181,6 +181,20 @@ namespace Nikse.SubtitleEdit.Forms.Tts
             checkBoxShowPreview.Checked = Configuration.Settings.Tools.TextToSpeechPreview;
 
             checkBoxAddToVideoFile.Enabled = _videoFileName != null;
+
+            
+            label_stability.Visible = false;
+            nikseTextBoxStability.Visible = false;
+
+            label_similarity.Visible = false;
+            nikseTextBoxSimilarity.Visible = false;
+
+            label_style.Visible = false;
+            nikseTextBoxStyle.Visible = false;
+
+            label_speaker_boost.Visible = false;
+            checkBoxSpeakerBoost.Visible = false;
+            
         }
 
         private void SetActor(ActorAndVoice actor)
@@ -1086,10 +1100,14 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                 }
 
                 var voice = voices.First(x => x.ToString() == v);
+                var stability = nikseTextBoxStability.Text;
+                var similarity = nikseTextBoxSimilarity.Text;
+                var style = nikseTextBoxStyle.Text;
+                var speaker_boost = checkBoxSpeakerBoost.Checked ? "true" : "false";
 
                 var url = "https://api.elevenlabs.io/v1/text-to-speech/" + voice.Model;
                 var text = Utilities.UnbreakLine(p.Text);
-                var data = "{ \"text\": \"" + Json.EncodeJsonText(text) + "\", \"model_id\": \"eleven_multilingual_v2\", \"voice_settings\": { \"stability\": 0.8, \"similarity_boost\": 1.0 } }";
+                var data = "{ \"text\": \"" + Json.EncodeJsonText(text) + "\", \"model_id\": \"eleven_multilingual_v2\", \"voice_settings\": { \"stability\":" + stability + ", \"similarity_boost\":"+ similarity +", \"style\":" + style + ", \"use_speaker_boost\":" + speaker_boost + "} }";
                 var content = new StringContent(data, Encoding.UTF8);
                 content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
                 var result = httpClient.PostAsync(url, content, CancellationToken.None).Result;
@@ -1404,6 +1422,18 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                 labelApiKey.Visible = true;
                 nikseTextBoxApiKey.Visible = true;
 
+                label_stability.Visible = true;
+                nikseTextBoxStability.Visible = true;
+
+                label_similarity.Visible = true;
+                nikseTextBoxSimilarity.Visible = true;
+
+                label_style.Visible = true;
+                nikseTextBoxStyle.Visible = true;
+
+                label_speaker_boost.Visible = true;
+                checkBoxSpeakerBoost.Visible = true;
+
                 if (_elevenLabVoices.Count == 0)
                 {
                     _elevenLabVoices.AddRange(GetElevenLabVoices(true));
@@ -1413,6 +1443,21 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                 {
                     nikseComboBoxVoice.Items.Add(voice.ToString());
                 }
+
+            }
+            else
+            {
+                label_stability.Visible = false;
+                nikseTextBoxStability.Visible = false;
+
+                label_similarity.Visible = false;
+                nikseTextBoxSimilarity.Visible = false;
+
+                label_style.Visible = false;
+                nikseTextBoxStyle.Visible = false;
+
+                label_speaker_boost.Visible = false;
+                checkBoxSpeakerBoost.Visible = false;
             }
 
             if (engine.Id == TextToSpeechEngineId.AzureTextToSpeech)

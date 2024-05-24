@@ -35,6 +35,14 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.labelEngine = new System.Windows.Forms.Label();
             this.groupBoxSettings = new System.Windows.Forms.GroupBox();
+            this.checkBoxSpeakerBoost = new System.Windows.Forms.CheckBox();
+            this.label_speaker_boost = new System.Windows.Forms.Label();
+            this.label_style = new System.Windows.Forms.Label();
+            this.nikseTextBoxStyle = new Nikse.SubtitleEdit.Controls.NikseTextBox();
+            this.label_similarity = new System.Windows.Forms.Label();
+            this.nikseTextBoxSimilarity = new Nikse.SubtitleEdit.Controls.NikseTextBox();
+            this.label_stability = new System.Windows.Forms.Label();
+            this.nikseTextBoxStability = new Nikse.SubtitleEdit.Controls.NikseTextBox();
             this.labelRegion = new System.Windows.Forms.Label();
             this.nikseComboBoxRegion = new Nikse.SubtitleEdit.Controls.NikseComboBox();
             this.labelVoiceCount = new System.Windows.Forms.Label();
@@ -63,9 +71,10 @@
             // 
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonOK.Location = new System.Drawing.Point(686, 456);
+            this.buttonOK.Location = new System.Drawing.Point(915, 561);
+            this.buttonOK.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(75, 23);
+            this.buttonOK.Size = new System.Drawing.Size(100, 28);
             this.buttonOK.TabIndex = 100;
             this.buttonOK.Text = "&OK";
             this.buttonOK.UseVisualStyleBackColor = true;
@@ -76,9 +85,10 @@
             this.labelProgress.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelProgress.AutoSize = true;
             this.labelProgress.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.labelProgress.Location = new System.Drawing.Point(12, 433);
+            this.labelProgress.Location = new System.Drawing.Point(16, 533);
+            this.labelProgress.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelProgress.Name = "labelProgress";
-            this.labelProgress.Size = new System.Drawing.Size(70, 13);
+            this.labelProgress.Size = new System.Drawing.Size(92, 16);
             this.labelProgress.TabIndex = 9;
             this.labelProgress.Text = "labelProgress";
             // 
@@ -86,9 +96,10 @@
             // 
             this.buttonGenerateTTS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonGenerateTTS.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonGenerateTTS.Location = new System.Drawing.Point(614, 423);
+            this.buttonGenerateTTS.Location = new System.Drawing.Point(819, 521);
+            this.buttonGenerateTTS.Margin = new System.Windows.Forms.Padding(4);
             this.buttonGenerateTTS.Name = "buttonGenerateTTS";
-            this.buttonGenerateTTS.Size = new System.Drawing.Size(228, 23);
+            this.buttonGenerateTTS.Size = new System.Drawing.Size(304, 28);
             this.buttonGenerateTTS.TabIndex = 90;
             this.buttonGenerateTTS.Text = "Generate speech from text";
             this.buttonGenerateTTS.UseVisualStyleBackColor = true;
@@ -98,18 +109,20 @@
             // 
             this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBar1.Location = new System.Drawing.Point(12, 456);
+            this.progressBar1.Location = new System.Drawing.Point(16, 561);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(4);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(665, 10);
+            this.progressBar1.Size = new System.Drawing.Size(887, 12);
             this.progressBar1.TabIndex = 12;
             // 
             // labelEngine
             // 
             this.labelEngine.AutoSize = true;
             this.labelEngine.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.labelEngine.Location = new System.Drawing.Point(14, 21);
+            this.labelEngine.Location = new System.Drawing.Point(19, 26);
+            this.labelEngine.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelEngine.Name = "labelEngine";
-            this.labelEngine.Size = new System.Drawing.Size(40, 13);
+            this.labelEngine.Size = new System.Drawing.Size(49, 16);
             this.labelEngine.TabIndex = 14;
             this.labelEngine.Text = "Engine";
             // 
@@ -117,6 +130,14 @@
             // 
             this.groupBoxSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBoxSettings.Controls.Add(this.checkBoxSpeakerBoost);
+            this.groupBoxSettings.Controls.Add(this.label_speaker_boost);
+            this.groupBoxSettings.Controls.Add(this.label_style);
+            this.groupBoxSettings.Controls.Add(this.nikseTextBoxStyle);
+            this.groupBoxSettings.Controls.Add(this.label_similarity);
+            this.groupBoxSettings.Controls.Add(this.nikseTextBoxSimilarity);
+            this.groupBoxSettings.Controls.Add(this.label_stability);
+            this.groupBoxSettings.Controls.Add(this.nikseTextBoxStability);
             this.groupBoxSettings.Controls.Add(this.labelRegion);
             this.groupBoxSettings.Controls.Add(this.nikseComboBoxRegion);
             this.groupBoxSettings.Controls.Add(this.labelVoiceCount);
@@ -130,20 +151,113 @@
             this.groupBoxSettings.Controls.Add(this.nikseComboBoxVoice);
             this.groupBoxSettings.Controls.Add(this.labelEngine);
             this.groupBoxSettings.Controls.Add(this.nikseComboBoxEngine);
-            this.groupBoxSettings.Location = new System.Drawing.Point(15, 12);
+            this.groupBoxSettings.Location = new System.Drawing.Point(20, 15);
+            this.groupBoxSettings.Margin = new System.Windows.Forms.Padding(4);
             this.groupBoxSettings.Name = "groupBoxSettings";
-            this.groupBoxSettings.Size = new System.Drawing.Size(391, 405);
+            this.groupBoxSettings.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBoxSettings.Size = new System.Drawing.Size(521, 498);
             this.groupBoxSettings.TabIndex = 1;
             this.groupBoxSettings.TabStop = false;
             this.groupBoxSettings.Text = "Settings";
+            // 
+            // checkBoxSpeakerBoost
+            // 
+            this.checkBoxSpeakerBoost.AutoSize = true;
+            this.checkBoxSpeakerBoost.Location = new System.Drawing.Point(425, 326);
+            this.checkBoxSpeakerBoost.Name = "checkBoxSpeakerBoost";
+            this.checkBoxSpeakerBoost.Size = new System.Drawing.Size(18, 17);
+            this.checkBoxSpeakerBoost.TabIndex = 48;
+            this.checkBoxSpeakerBoost.UseVisualStyleBackColor = true;
+            // 
+            // label_speaker_boost
+            // 
+            this.label_speaker_boost.AutoSize = true;
+            this.label_speaker_boost.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label_speaker_boost.Location = new System.Drawing.Point(365, 302);
+            this.label_speaker_boost.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label_speaker_boost.Name = "label_speaker_boost";
+            this.label_speaker_boost.Size = new System.Drawing.Size(127, 16);
+            this.label_speaker_boost.TabIndex = 47;
+            this.label_speaker_boost.Text = "use_speaker_boost";
+            // 
+            // label_style
+            // 
+            this.label_style.AutoSize = true;
+            this.label_style.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label_style.Location = new System.Drawing.Point(292, 302);
+            this.label_style.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label_style.Name = "label_style";
+            this.label_style.Size = new System.Drawing.Size(65, 16);
+            this.label_style.TabIndex = 46;
+            this.label_style.Text = "Style (0,1)";
+            // 
+            // nikseTextBoxStyle
+            // 
+            this.nikseTextBoxStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nikseTextBoxStyle.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.nikseTextBoxStyle.Location = new System.Drawing.Point(283, 322);
+            this.nikseTextBoxStyle.Margin = new System.Windows.Forms.Padding(4);
+            this.nikseTextBoxStyle.Name = "nikseTextBoxStyle";
+            this.nikseTextBoxStyle.Size = new System.Drawing.Size(79, 22);
+            this.nikseTextBoxStyle.TabIndex = 45;
+            this.nikseTextBoxStyle.Text = "0";
+            // 
+            // label_similarity
+            // 
+            this.label_similarity.AutoSize = true;
+            this.label_similarity.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label_similarity.Location = new System.Drawing.Point(146, 302);
+            this.label_similarity.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label_similarity.Name = "label_similarity";
+            this.label_similarity.Size = new System.Drawing.Size(89, 16);
+            this.label_similarity.TabIndex = 44;
+            this.label_similarity.Text = "Similarity (0,1)";
+            // 
+            // nikseTextBoxSimilarity
+            // 
+            this.nikseTextBoxSimilarity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nikseTextBoxSimilarity.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.nikseTextBoxSimilarity.Location = new System.Drawing.Point(153, 322);
+            this.nikseTextBoxSimilarity.Margin = new System.Windows.Forms.Padding(4);
+            this.nikseTextBoxSimilarity.Name = "nikseTextBoxSimilarity";
+            this.nikseTextBoxSimilarity.Size = new System.Drawing.Size(79, 22);
+            this.nikseTextBoxSimilarity.TabIndex = 43;
+            this.nikseTextBoxSimilarity.Text = "0.5";
+            // 
+            // label_stability
+            // 
+            this.label_stability.AutoSize = true;
+            this.label_stability.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label_stability.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label_stability.Location = new System.Drawing.Point(21, 302);
+            this.label_stability.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label_stability.Name = "label_stability";
+            this.label_stability.Size = new System.Drawing.Size(82, 16);
+            this.label_stability.TabIndex = 42;
+            this.label_stability.Text = "Stability (0,1)";
+            // 
+            // nikseTextBoxStability
+            // 
+            this.nikseTextBoxStability.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nikseTextBoxStability.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
+            this.nikseTextBoxStability.Location = new System.Drawing.Point(23, 322);
+            this.nikseTextBoxStability.Margin = new System.Windows.Forms.Padding(4);
+            this.nikseTextBoxStability.Name = "nikseTextBoxStability";
+            this.nikseTextBoxStability.Size = new System.Drawing.Size(79, 22);
+            this.nikseTextBoxStability.TabIndex = 41;
+            this.nikseTextBoxStability.Text = "0.5";
             // 
             // labelRegion
             // 
             this.labelRegion.AutoSize = true;
             this.labelRegion.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.labelRegion.Location = new System.Drawing.Point(14, 268);
+            this.labelRegion.Location = new System.Drawing.Point(19, 352);
+            this.labelRegion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelRegion.Name = "labelRegion";
-            this.labelRegion.Size = new System.Drawing.Size(41, 13);
+            this.labelRegion.Size = new System.Drawing.Size(51, 16);
             this.labelRegion.TabIndex = 32;
             this.labelRegion.Text = "Region";
             // 
@@ -162,22 +276,24 @@
             this.nikseComboBoxRegion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.nikseComboBoxRegion.DropDownWidth = 0;
             this.nikseComboBoxRegion.FormattingEnabled = false;
-            this.nikseComboBoxRegion.Location = new System.Drawing.Point(17, 286);
+            this.nikseComboBoxRegion.Location = new System.Drawing.Point(23, 374);
+            this.nikseComboBoxRegion.Margin = new System.Windows.Forms.Padding(4);
             this.nikseComboBoxRegion.MaxLength = 32767;
             this.nikseComboBoxRegion.Name = "nikseComboBoxRegion";
             this.nikseComboBoxRegion.SelectedIndex = -1;
             this.nikseComboBoxRegion.SelectedItem = null;
             this.nikseComboBoxRegion.SelectedText = "";
-            this.nikseComboBoxRegion.Size = new System.Drawing.Size(351, 23);
+            this.nikseComboBoxRegion.Size = new System.Drawing.Size(468, 28);
             this.nikseComboBoxRegion.TabIndex = 31;
             this.nikseComboBoxRegion.UsePopupWindow = false;
             // 
             // labelVoiceCount
             // 
             this.labelVoiceCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelVoiceCount.Location = new System.Drawing.Point(268, 83);
+            this.labelVoiceCount.Location = new System.Drawing.Point(357, 102);
+            this.labelVoiceCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelVoiceCount.Name = "labelVoiceCount";
-            this.labelVoiceCount.Size = new System.Drawing.Size(100, 23);
+            this.labelVoiceCount.Size = new System.Drawing.Size(133, 28);
             this.labelVoiceCount.TabIndex = 29;
             this.labelVoiceCount.Text = "255";
             this.labelVoiceCount.TextAlign = System.Drawing.ContentAlignment.BottomRight;
@@ -188,9 +304,10 @@
             this.checkBoxShowPreview.AutoSize = true;
             this.checkBoxShowPreview.Checked = true;
             this.checkBoxShowPreview.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxShowPreview.Location = new System.Drawing.Point(17, 333);
+            this.checkBoxShowPreview.Location = new System.Drawing.Point(23, 411);
+            this.checkBoxShowPreview.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxShowPreview.Name = "checkBoxShowPreview";
-            this.checkBoxShowPreview.Size = new System.Drawing.Size(115, 17);
+            this.checkBoxShowPreview.Size = new System.Drawing.Size(142, 20);
             this.checkBoxShowPreview.TabIndex = 25;
             this.checkBoxShowPreview.Text = "Review audio clips";
             this.checkBoxShowPreview.UseVisualStyleBackColor = true;
@@ -199,9 +316,10 @@
             // 
             this.labelApiKey.AutoSize = true;
             this.labelApiKey.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.labelApiKey.Location = new System.Drawing.Point(20, 219);
+            this.labelApiKey.Location = new System.Drawing.Point(20, 247);
+            this.labelApiKey.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelApiKey.Name = "labelApiKey";
-            this.labelApiKey.Size = new System.Drawing.Size(44, 13);
+            this.labelApiKey.Size = new System.Drawing.Size(53, 16);
             this.labelApiKey.TabIndex = 28;
             this.labelApiKey.Text = "API key";
             // 
@@ -210,9 +328,10 @@
             this.nikseTextBoxApiKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nikseTextBoxApiKey.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.nikseTextBoxApiKey.Location = new System.Drawing.Point(17, 237);
+            this.nikseTextBoxApiKey.Location = new System.Drawing.Point(22, 267);
+            this.nikseTextBoxApiKey.Margin = new System.Windows.Forms.Padding(4);
             this.nikseTextBoxApiKey.Name = "nikseTextBoxApiKey";
-            this.nikseTextBoxApiKey.Size = new System.Drawing.Size(351, 20);
+            this.nikseTextBoxApiKey.Size = new System.Drawing.Size(467, 22);
             this.nikseTextBoxApiKey.TabIndex = 27;
             // 
             // TextBoxTest
@@ -220,18 +339,20 @@
             this.TextBoxTest.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TextBoxTest.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(215)))));
-            this.TextBoxTest.Location = new System.Drawing.Point(17, 172);
+            this.TextBoxTest.Location = new System.Drawing.Point(23, 212);
+            this.TextBoxTest.Margin = new System.Windows.Forms.Padding(4);
             this.TextBoxTest.Name = "TextBoxTest";
-            this.TextBoxTest.Size = new System.Drawing.Size(351, 20);
+            this.TextBoxTest.Size = new System.Drawing.Size(467, 22);
             this.TextBoxTest.TabIndex = 20;
             this.TextBoxTest.Text = "Hello, how are you?";
             this.TextBoxTest.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxTest_KeyDown);
             // 
             // buttonTestVoice
             // 
-            this.buttonTestVoice.Location = new System.Drawing.Point(17, 141);
+            this.buttonTestVoice.Location = new System.Drawing.Point(23, 174);
+            this.buttonTestVoice.Margin = new System.Windows.Forms.Padding(4);
             this.buttonTestVoice.Name = "buttonTestVoice";
-            this.buttonTestVoice.Size = new System.Drawing.Size(150, 23);
+            this.buttonTestVoice.Size = new System.Drawing.Size(200, 28);
             this.buttonTestVoice.TabIndex = 15;
             this.buttonTestVoice.Text = "Test voice";
             this.buttonTestVoice.UseVisualStyleBackColor = true;
@@ -243,9 +364,10 @@
             this.checkBoxAddToVideoFile.AutoSize = true;
             this.checkBoxAddToVideoFile.Checked = true;
             this.checkBoxAddToVideoFile.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxAddToVideoFile.Location = new System.Drawing.Point(17, 357);
+            this.checkBoxAddToVideoFile.Location = new System.Drawing.Point(23, 441);
+            this.checkBoxAddToVideoFile.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxAddToVideoFile.Name = "checkBoxAddToVideoFile";
-            this.checkBoxAddToVideoFile.Size = new System.Drawing.Size(176, 17);
+            this.checkBoxAddToVideoFile.Size = new System.Drawing.Size(217, 20);
             this.checkBoxAddToVideoFile.TabIndex = 26;
             this.checkBoxAddToVideoFile.Text = "Add audio to video file (new file)";
             this.checkBoxAddToVideoFile.UseVisualStyleBackColor = true;
@@ -254,9 +376,10 @@
             // 
             this.labelVoice.AutoSize = true;
             this.labelVoice.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.labelVoice.Location = new System.Drawing.Point(14, 93);
+            this.labelVoice.Location = new System.Drawing.Point(19, 114);
+            this.labelVoice.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelVoice.Name = "labelVoice";
-            this.labelVoice.Size = new System.Drawing.Size(34, 13);
+            this.labelVoice.Size = new System.Drawing.Size(42, 16);
             this.labelVoice.TabIndex = 16;
             this.labelVoice.Text = "Voice";
             // 
@@ -276,28 +399,30 @@
             this.nikseComboBoxVoice.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.nikseComboBoxVoice.DropDownWidth = 0;
             this.nikseComboBoxVoice.FormattingEnabled = false;
-            this.nikseComboBoxVoice.Location = new System.Drawing.Point(17, 110);
+            this.nikseComboBoxVoice.Location = new System.Drawing.Point(23, 135);
+            this.nikseComboBoxVoice.Margin = new System.Windows.Forms.Padding(4);
             this.nikseComboBoxVoice.MaxLength = 32767;
             this.nikseComboBoxVoice.Name = "nikseComboBoxVoice";
             this.nikseComboBoxVoice.SelectedIndex = -1;
             this.nikseComboBoxVoice.SelectedItem = null;
             this.nikseComboBoxVoice.SelectedText = "";
-            this.nikseComboBoxVoice.Size = new System.Drawing.Size(351, 23);
+            this.nikseComboBoxVoice.Size = new System.Drawing.Size(468, 28);
             this.nikseComboBoxVoice.TabIndex = 10;
             this.nikseComboBoxVoice.UsePopupWindow = false;
             // 
             // contextMenuStripVoices
             // 
+            this.contextMenuStripVoices.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStripVoices.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshVoicesToolStripMenuItem});
             this.contextMenuStripVoices.Name = "contextMenuStripVoices";
-            this.contextMenuStripVoices.Size = new System.Drawing.Size(150, 26);
+            this.contextMenuStripVoices.Size = new System.Drawing.Size(173, 28);
             this.contextMenuStripVoices.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripVoices_Opening);
             // 
             // refreshVoicesToolStripMenuItem
             // 
             this.refreshVoicesToolStripMenuItem.Name = "refreshVoicesToolStripMenuItem";
-            this.refreshVoicesToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.refreshVoicesToolStripMenuItem.Size = new System.Drawing.Size(172, 24);
             this.refreshVoicesToolStripMenuItem.Text = "Refresh voices";
             this.refreshVoicesToolStripMenuItem.Click += new System.EventHandler(this.refreshVoicesToolStripMenuItem_Click);
             // 
@@ -316,13 +441,14 @@
             this.nikseComboBoxEngine.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.nikseComboBoxEngine.DropDownWidth = 391;
             this.nikseComboBoxEngine.FormattingEnabled = false;
-            this.nikseComboBoxEngine.Location = new System.Drawing.Point(17, 40);
+            this.nikseComboBoxEngine.Location = new System.Drawing.Point(23, 49);
+            this.nikseComboBoxEngine.Margin = new System.Windows.Forms.Padding(4);
             this.nikseComboBoxEngine.MaxLength = 32767;
             this.nikseComboBoxEngine.Name = "nikseComboBoxEngine";
             this.nikseComboBoxEngine.SelectedIndex = -1;
             this.nikseComboBoxEngine.SelectedItem = null;
             this.nikseComboBoxEngine.SelectedText = "";
-            this.nikseComboBoxEngine.Size = new System.Drawing.Size(351, 23);
+            this.nikseComboBoxEngine.Size = new System.Drawing.Size(468, 28);
             this.nikseComboBoxEngine.TabIndex = 5;
             this.nikseComboBoxEngine.TabStop = false;
             this.nikseComboBoxEngine.Text = "nikseComboBox1";
@@ -340,9 +466,10 @@
             this.listViewActors.FullRowSelect = true;
             this.listViewActors.GridLines = true;
             this.listViewActors.HideSelection = false;
-            this.listViewActors.Location = new System.Drawing.Point(412, 42);
+            this.listViewActors.Location = new System.Drawing.Point(549, 52);
+            this.listViewActors.Margin = new System.Windows.Forms.Padding(4);
             this.listViewActors.Name = "listViewActors";
-            this.listViewActors.Size = new System.Drawing.Size(430, 375);
+            this.listViewActors.Size = new System.Drawing.Size(572, 461);
             this.listViewActors.TabIndex = 40;
             this.listViewActors.UseCompatibleStateImageBehavior = false;
             this.listViewActors.View = System.Windows.Forms.View.Details;
@@ -359,6 +486,7 @@
             // 
             // contextMenuStripActors
             // 
+            this.contextMenuStripActors.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStripActors.Name = "contextMenuStripActors";
             this.contextMenuStripActors.Size = new System.Drawing.Size(61, 4);
             // 
@@ -366,9 +494,10 @@
             // 
             this.labelActors.AutoSize = true;
             this.labelActors.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.labelActors.Location = new System.Drawing.Point(412, 19);
+            this.labelActors.Location = new System.Drawing.Point(549, 23);
+            this.labelActors.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelActors.Name = "labelActors";
-            this.labelActors.Size = new System.Drawing.Size(170, 13);
+            this.labelActors.Size = new System.Drawing.Size(209, 16);
             this.labelActors.TabIndex = 19;
             this.labelActors.Text = "Right-click to assign actor to voice";
             // 
@@ -377,9 +506,10 @@
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.buttonCancel.Location = new System.Drawing.Point(767, 456);
+            this.buttonCancel.Location = new System.Drawing.Point(1023, 561);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.Size = new System.Drawing.Size(100, 28);
             this.buttonCancel.TabIndex = 101;
             this.buttonCancel.Text = "C&ancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -387,9 +517,9 @@
             // 
             // TextToSpeech
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(854, 491);
+            this.ClientSize = new System.Drawing.Size(1139, 604);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.labelActors);
             this.Controls.Add(this.listViewActors);
@@ -399,7 +529,8 @@
             this.Controls.Add(this.labelProgress);
             this.Controls.Add(this.buttonOK);
             this.KeyPreview = true;
-            this.MinimumSize = new System.Drawing.Size(860, 520);
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MinimumSize = new System.Drawing.Size(1141, 629);
             this.Name = "TextToSpeech";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -446,5 +577,13 @@
         private Controls.NikseComboBox nikseComboBoxRegion;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripVoices;
         private System.Windows.Forms.ToolStripMenuItem refreshVoicesToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkBoxSpeakerBoost;
+        private System.Windows.Forms.Label label_speaker_boost;
+        private System.Windows.Forms.Label label_style;
+        private Controls.NikseTextBox nikseTextBoxStyle;
+        private System.Windows.Forms.Label label_similarity;
+        private Controls.NikseTextBox nikseTextBoxSimilarity;
+        private System.Windows.Forms.Label label_stability;
+        private Controls.NikseTextBox nikseTextBoxStability;
     }
 }
