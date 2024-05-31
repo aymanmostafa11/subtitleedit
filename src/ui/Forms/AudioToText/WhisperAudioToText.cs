@@ -16,7 +16,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using static Nikse.SubtitleEdit.Forms.Options.Settings;
 using MessageBox = Nikse.SubtitleEdit.Forms.SeMsgBox.MessageBox;
 
 namespace Nikse.SubtitleEdit.Forms.AudioToText
@@ -187,7 +186,7 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
 
         private void Init()
         {
-            InitializeLanguageNames();
+            InitializeLanguageNames(comboBoxLanguages);
 
             FillModels(comboBoxModels, string.Empty);
 
@@ -773,6 +772,28 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
         private void SaveToSourceFolder(string videoFileName)
         {
             var format = SubtitleFormat.FromName(Configuration.Settings.General.DefaultSubtitleFormat, new SubRip());
+            if (format.GetType() == typeof(AdvancedSubStationAlpha))
+            {
+                try
+                {
+                    var info = FfmpegMediaInfo.Parse(videoFileName);
+                    if (info.Dimension.Width > 0)
+                    {
+                        if (string.IsNullOrEmpty(TranscribedSubtitle.Header))
+                        {
+                            TranscribedSubtitle.Header = AdvancedSubStationAlpha.DefaultHeader;
+                        }
+
+                        TranscribedSubtitle.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResX", "PlayResX: " + info.Dimension.Width.ToString(CultureInfo.InvariantCulture), "[Script Info]", TranscribedSubtitle.Header);
+                        TranscribedSubtitle.Header = AdvancedSubStationAlpha.AddTagToHeader("PlayResY", "PlayResY: " + info.Dimension.Height.ToString(CultureInfo.InvariantCulture), "[Script Info]", TranscribedSubtitle.Header);
+                    }
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+
             var text = TranscribedSubtitle.ToText(format);
 
             var fileName = Path.Combine(Utilities.GetPathAndFileNameWithoutExtension(videoFileName)) + format.Extension;
@@ -1931,16 +1952,16 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
                     }
                 }
 
-                InitializeLanguageNames();
+                InitializeLanguageNames(comboBoxLanguages);
                 return;
             }
 
             checkBoxTranslateToEnglish.Enabled = comboBoxLanguages.Text.ToLowerInvariant() != "english";
         }
 
-        private void InitializeLanguageNames()
+        internal static void InitializeLanguageNames(NikseComboBox comboBox)
         {
-            comboBoxLanguages.Items.Clear();
+            comboBox.Items.Clear();
 
             var languagesFilled = false;
 
@@ -1948,36 +1969,37 @@ namespace Nikse.SubtitleEdit.Forms.AudioToText
             {
                 var favorites = Utilities.GetSubtitleLanguageCultures(true).ToList();
                 var languages = WhisperLanguage.Languages;
+                var languagesToAdd = new List<WhisperLanguage>();
 
                 foreach (var whisperLanguage in languages)
                 {
                     if (favorites.Any(p => p.TwoLetterISOLanguageName == whisperLanguage.Code) ||
-                        favorites.Any(p => p.EnglishName == whisperLanguage.Name))
+                        favorites.Any(p2 => p2.EnglishName.Contains(whisperLanguage.Name, StringComparison.OrdinalIgnoreCase)) ||
+                        favorites.Any(p3 => whisperLanguage.Name.Contains(p3.EnglishName, StringComparison.OrdinalIgnoreCase)))
                     {
                         languagesFilled = true;
-                        comboBoxLanguages.Items.Add(whisperLanguage);
+                        languagesToAdd.Add(whisperLanguage);
                     }
                 }
 
-                if (languagesFilled)
-                {
-                    comboBoxLanguages.Items.Add(LanguageSettings.Current.General.ChangeLanguageFilter);
-                }
+                comboBox.Items.AddRange(languagesToAdd.OrderBy(p => p.Name).ToArray<object>());
 
                 var lang = languages.FirstOrDefault(p => p.Code == Configuration.Settings.Tools.WhisperLanguageCode);
-                comboBoxLanguages.Text = lang != null ? lang.ToString() : "English";
+                comboBox.Text = lang != null ? lang.ToString() : "English";
             }
 
             if (!languagesFilled)
             {
-                comboBoxLanguages.Items.AddRange(WhisperLanguage.Languages.OrderBy(p => p.Name).ToArray<object>());
+                comboBox.Items.AddRange(WhisperLanguage.Languages.OrderBy(p => p.Name).ToArray<object>());
                 var lang = WhisperLanguage.Languages.FirstOrDefault(p => p.Code == Configuration.Settings.Tools.WhisperLanguageCode);
-                comboBoxLanguages.Text = lang != null ? lang.ToString() : "English";
+                comboBox.Text = lang != null ? lang.ToString() : "English";
             }
 
-            if (string.IsNullOrEmpty(comboBoxLanguages.Text) && comboBoxLanguages.Items.Count > 0)
+            comboBox.Items.Add(LanguageSettings.Current.General.ChangeLanguageFilter);
+
+            if (string.IsNullOrEmpty(comboBox.Text) && comboBox.Items.Count > 0)
             {
-                comboBoxLanguages.SelectedIndex = 0;
+                comboBox.SelectedIndex = 0;
             }
         }
 
