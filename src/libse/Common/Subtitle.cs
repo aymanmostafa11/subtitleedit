@@ -27,6 +27,8 @@ namespace Nikse.SubtitleEdit.Core.Common
         public List<HistoryItem> HistoryItems { get; }
         public bool CanUndo => HistoryItems.Count > 0;
 
+        public int CharacterCount;
+
         public Subtitle() : this(new List<Paragraph>(), new List<HistoryItem>())
         {
         }
@@ -44,6 +46,11 @@ namespace Nikse.SubtitleEdit.Core.Common
             HistoryItems = historyItems;
             Paragraphs = paragraphs;
             FileName = "Untitled";
+            CharacterCount = 0;
+            foreach (var p in paragraphs)
+            {
+                CharacterCount += p.Text.Length;
+            }
         }
 
         /// <summary>
@@ -73,6 +80,12 @@ namespace Nikse.SubtitleEdit.Core.Common
             FileName = subtitle.FileName;
             OriginalFormat = subtitle.OriginalFormat;
             OriginalEncoding = subtitle.OriginalEncoding;
+            CharacterCount = 0;
+            foreach (var p in Paragraphs)
+            {
+                CharacterCount += p.Text.Length;
+            }
+
         }
 
 
