@@ -1142,53 +1142,52 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                         }
                     }
 
-                var voice = voices.First(x => x.ToString() == v);
-                var stability = nikseTextBoxStability.Text;
-                var similarity = nikseTextBoxSimilarity.Text;
-                var style = nikseTextBoxStyle.Text;
-                var speaker_boost = checkBoxSpeakerBoost.Checked ? "true" : "false";
-                bool add_context = checkBoxContext.Checked;
+                    var voice = voices.First(x => x.ToString() == v);
+                    var stability = nikseTextBoxStability.Text;
+                    var similarity = nikseTextBoxSimilarity.Text;
+                    var style = nikseTextBoxStyle.Text;
+                    var speaker_boost = checkBoxSpeakerBoost.Checked ? "true" : "false";
+                    bool add_context = checkBoxContext.Checked;
 
-                var context_text = "";
-                if (add_context & subtitle.Paragraphs.Count > 1)
-                {
-                    context_text += ",";
-                    var previous_text = "";
-                    var next_text = "";
-                    if (index == 0)
+                    var context_text = "";
+                    if (add_context & subtitle.Paragraphs.Count > 1)
                     {
-                        next_text = subtitle.Paragraphs[index + 1].Text;
+                        context_text += ",";
+                        var previous_text = "";
+                        var next_text = "";
+                        if (index == 0)
+                        {
+                            next_text = subtitle.Paragraphs[index + 1].Text;
 
-                    }
-                    else if (index == subtitle.Paragraphs.Count - 1)
-                    {
-                        previous_text = subtitle.Paragraphs[index - 1].Text;
-                    }
-                    else
-                    {
-                        next_text = subtitle.Paragraphs[index + 1].Text;
-                        previous_text = subtitle.Paragraphs[index - 1].Text;
-                    }
+                        }
+                        else if (index == subtitle.Paragraphs.Count - 1)
+                        {
+                            previous_text = subtitle.Paragraphs[index - 1].Text;
+                        }
+                        else
+                        {
+                            next_text = subtitle.Paragraphs[index + 1].Text;
+                            previous_text = subtitle.Paragraphs[index - 1].Text;
+                        }
 
 
-                    if (!String.IsNullOrEmpty(previous_text))
-                        context_text += "\"previous_text\":\"" + previous_text + "\"";
-
-
-                    if (!String.IsNullOrEmpty(next_text))
-                    {
                         if (!String.IsNullOrEmpty(previous_text))
-                            context_text += ",";
-                        context_text += "\"next_text\":\"" + next_text + "\"";
+                            context_text += "\"previous_text\":\"" + previous_text + "\"";
+
+
+                        if (!String.IsNullOrEmpty(next_text))
+                        {
+                            if (!String.IsNullOrEmpty(previous_text))
+                                context_text += ",";
+                            context_text += "\"next_text\":\"" + next_text + "\"";
+                        }
                     }
-                }
-                var url = "https://api.elevenlabs.io/v1/text-to-speech/" + voice.Model;
-                var text = Utilities.UnbreakLine(p.Text);
-                var data = "{ \"text\": \"" + Json.EncodeJsonText(text) + "\", \"model_id\": \"eleven_multilingual_v2\", \"voice_settings\": { \"stability\": 0.8, \"similarity_boost\": 1.0 } }";
-                var content = new StringContent(data, Encoding.UTF8);
-                content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
-                var result = httpClient.PostAsync(url, content, CancellationToken.None).Result;
-                var bytes = result.Content.ReadAsByteArrayAsync().Result;
+                    var url = "https://api.elevenlabs.io/v1/text-to-speech/" + voice.Model;
+                    var text = Utilities.UnbreakLine(p.Text);
+                    var model = nikseComboBoxRegion.Text;
+
+                    var language = string.Empty;
+                    if (model == "eleven_turbo_v2_5")
                     {
                         if (nikseComboBoxLanguage.SelectedItem is TranslationPair tp)
                         {
@@ -1564,201 +1563,170 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                 nikseComboBoxRegion.Text = Configuration.Settings.Tools.TextToSpeechElevenLabsModel;
                 if (nikseComboBoxRegion.SelectedIndex < 0)
                 {
-                if (nikseComboBoxRegion.SelectedIndex < 0)
-                {
-                    nikseComboBoxRegion.SelectedIndex = 1;
-                }
-
-                nikseComboBoxRegion.Visible = true;
-            }
-
-            if (engine.Id == TextToSpeechEngineId.AzureTextToSpeech)
-            {
-                labelApiKey.Visible = true;
-                nikseTextBoxApiKey.Visible = true;
-
-                _azureVoices.Clear();
-                var azureVoices = GetAzureVoices(true);
-                _azureVoices.AddRange(azureVoices);
-                nikseComboBoxVoice.Items.AddRange(_azureVoices.Select(p => p.ToString()).ToArray());
-
-                labelRegion.Visible = true;
-                nikseComboBoxRegion.Visible = true;
-
-                nikseComboBoxRegion.Items.Clear();
-                nikseComboBoxRegion.Items.Add("australiaeast");
-                nikseComboBoxRegion.Items.Add("brazilsouth");
-                nikseComboBoxRegion.Items.Add("canadacentral");
-                nikseComboBoxRegion.Items.Add("centralus");
-                nikseComboBoxRegion.Items.Add("eastasia");
-                nikseComboBoxRegion.Items.Add("eastus");
-                nikseComboBoxRegion.Items.Add("eastus2");
-                nikseComboBoxRegion.Items.Add("francecentral");
-                nikseComboBoxRegion.Items.Add("germanywestcentral");
-                nikseComboBoxRegion.Items.Add("centralindia");
-                nikseComboBoxRegion.Items.Add("japaneast");
-                nikseComboBoxRegion.Items.Add("japanwest");
-                nikseComboBoxRegion.Items.Add("jioindiawest");
-                nikseComboBoxRegion.Items.Add("koreacentral");
-                nikseComboBoxRegion.Items.Add("northcentralus");
-                nikseComboBoxRegion.Items.Add("northeurope");
-                nikseComboBoxRegion.Items.Add("norwayeast");
-                nikseComboBoxRegion.Items.Add("southcentralus");
-                nikseComboBoxRegion.Items.Add("southeastasia");
-                nikseComboBoxRegion.Items.Add("swedencentral");
-                nikseComboBoxRegion.Items.Add("switzerlandnorth");
-                nikseComboBoxRegion.Items.Add("switzerlandwest");
-                nikseComboBoxRegion.Items.Add("uaenorth");
-                nikseComboBoxRegion.Items.Add("usgovarizona");
-                nikseComboBoxRegion.Items.Add("usgovvirginia");
-                nikseComboBoxRegion.Items.Add("uksouth");
-                nikseComboBoxRegion.Items.Add("westcentralus");
-                nikseComboBoxRegion.Items.Add("westeurope");
-                nikseComboBoxRegion.Items.Add("westus");
-                nikseComboBoxRegion.Items.Add("westus2");
-                nikseComboBoxRegion.Items.Add("westus3");
-
-                nikseTextBoxApiKey.Text = Configuration.Settings.Tools.TextToSpeechAzureApiKey;
-                nikseComboBoxRegion.Text = Configuration.Settings.Tools.TextToSpeechAzureRegion;
-            }
-
-            if (nikseComboBoxVoice.Items.Count > 0 && nikseComboBoxVoice.SelectedIndex < 0)
-            {
-                SetFirstLanguageHitAsVoice();
-            }
-
-            if (nikseComboBoxVoice.Items.Count > 1)
-            {
-                labelVoiceCount.Text = nikseComboBoxVoice.Items.Count.ToString(CultureInfo.InvariantCulture);
-            }
-
-            _actorAndVoices.Clear();
-
-            if (SubtitleFormatHasActors())
-            {
-                if (_actors.Any())
-                {
-                    foreach (var actor in _actors)
+                    if (nikseComboBoxRegion.SelectedIndex < 0)
                     {
-                        var actorAndVoice = new ActorAndVoice
-                        {
-                            Actor = actor,
-                            UseCount = _subtitle.Paragraphs.Count(p => p.Actor == actor),
-                        };
-
-                        _actorAndVoices.Add(actorAndVoice);
+                        nikseComboBoxRegion.SelectedIndex = 1;
                     }
 
-                    FillActorListView();
+                    nikseComboBoxRegion.Visible = true;
+                }
 
-                    contextMenuStripActors.Items.Clear();
+                if (engine.Id == TextToSpeechEngineId.AzureTextToSpeech)
+                {
+                    labelApiKey.Visible = true;
+                    nikseTextBoxApiKey.Visible = true;
 
-                    if (engine.Id == TextToSpeechEngineId.Piper)
+                    _azureVoices.Clear();
+                    var azureVoices = GetAzureVoices(true);
+                    _azureVoices.AddRange(azureVoices);
+                    nikseComboBoxVoice.Items.AddRange(_azureVoices.Select(p => p.ToString()).ToArray());
+
+                    labelRegion.Visible = true;
+                    nikseComboBoxRegion.Visible = true;
+
+                    nikseComboBoxRegion.Items.Clear();
+                    nikseComboBoxRegion.Items.Add("australiaeast");
+                    nikseComboBoxRegion.Items.Add("brazilsouth");
+                    nikseComboBoxRegion.Items.Add("canadacentral");
+                    nikseComboBoxRegion.Items.Add("centralus");
+                    nikseComboBoxRegion.Items.Add("eastasia");
+                    nikseComboBoxRegion.Items.Add("eastus");
+                    nikseComboBoxRegion.Items.Add("eastus2");
+                    nikseComboBoxRegion.Items.Add("francecentral");
+                    nikseComboBoxRegion.Items.Add("germanywestcentral");
+                    nikseComboBoxRegion.Items.Add("centralindia");
+                    nikseComboBoxRegion.Items.Add("japaneast");
+                    nikseComboBoxRegion.Items.Add("japanwest");
+                    nikseComboBoxRegion.Items.Add("jioindiawest");
+                    nikseComboBoxRegion.Items.Add("koreacentral");
+                    nikseComboBoxRegion.Items.Add("northcentralus");
+                    nikseComboBoxRegion.Items.Add("northeurope");
+                    nikseComboBoxRegion.Items.Add("norwayeast");
+                    nikseComboBoxRegion.Items.Add("southcentralus");
+                    nikseComboBoxRegion.Items.Add("southeastasia");
+                    nikseComboBoxRegion.Items.Add("swedencentral");
+                    nikseComboBoxRegion.Items.Add("switzerlandnorth");
+                    nikseComboBoxRegion.Items.Add("switzerlandwest");
+                    nikseComboBoxRegion.Items.Add("uaenorth");
+                    nikseComboBoxRegion.Items.Add("usgovarizona");
+                    nikseComboBoxRegion.Items.Add("usgovvirginia");
+                    nikseComboBoxRegion.Items.Add("uksouth");
+                    nikseComboBoxRegion.Items.Add("westcentralus");
+                    nikseComboBoxRegion.Items.Add("westeurope");
+                    nikseComboBoxRegion.Items.Add("westus");
+                    nikseComboBoxRegion.Items.Add("westus2");
+                    nikseComboBoxRegion.Items.Add("westus3");
+
+                    nikseTextBoxApiKey.Text = Configuration.Settings.Tools.TextToSpeechAzureApiKey;
+                    nikseComboBoxRegion.Text = Configuration.Settings.Tools.TextToSpeechAzureRegion;
+                }
+
+                if (nikseComboBoxVoice.Items.Count > 0 && nikseComboBoxVoice.SelectedIndex < 0)
+                {
+                    SetFirstLanguageHitAsVoice();
+                }
+
+                if (nikseComboBoxVoice.Items.Count > 1)
+                {
+                    labelVoiceCount.Text = nikseComboBoxVoice.Items.Count.ToString(CultureInfo.InvariantCulture);
+                }
+
+                _actorAndVoices.Clear();
+
+                if (SubtitleFormatHasActors())
+                {
+                    if (_actors.Any())
                     {
-                        var voices = _piperVoices;
-                        foreach (var voiceLanguage in voices
-                                     .GroupBy(p => p.Language)
-                                     .OrderBy(p => p.Key))
+                        foreach (var actor in _actors)
                         {
-                            if (voiceLanguage.Count() == 1)
+                            var actorAndVoice = new ActorAndVoice
                             {
-                                var voice = voiceLanguage.First();
-                                var tsi = new ToolStripMenuItem();
-                                tsi.Tag = new ActorAndVoice { Voice = voice.Voice, VoiceIndex = voices.IndexOf(voice) };
-                                tsi.Text = voice.ToString();
-                                tsi.Click += (x, args) =>
-                                {
-                                    var a = (ActorAndVoice)(x as ToolStripItem).Tag;
-                                    SetActor(a);
-                                };
-                                contextMenuStripActors.Items.Add(tsi);
-                            }
-                            else
-                            {
-                                var parent = new ToolStripMenuItem();
-                                parent.Text = voiceLanguage.Key;
-                                contextMenuStripActors.Items.Add(parent);
+                                Actor = actor,
+                                UseCount = _subtitle.Paragraphs.Count(p => p.Actor == actor),
+                            };
 
-                                foreach (var voice in voiceLanguage.OrderBy(p => p.Voice).ToList())
+                            _actorAndVoices.Add(actorAndVoice);
+                        }
+
+                        FillActorListView();
+
+                        contextMenuStripActors.Items.Clear();
+
+                        if (engine.Id == TextToSpeechEngineId.Piper)
+                        {
+                            var voices = _piperVoices;
+                            foreach (var voiceLanguage in voices
+                                         .GroupBy(p => p.Language)
+                                         .OrderBy(p => p.Key))
+                            {
+                                if (voiceLanguage.Count() == 1)
                                 {
+                                    var voice = voiceLanguage.First();
                                     var tsi = new ToolStripMenuItem();
                                     tsi.Tag = new ActorAndVoice { Voice = voice.Voice, VoiceIndex = voices.IndexOf(voice) };
-                                    tsi.Text = voice.Voice + " (" + voice.Quality + ")";
+                                    tsi.Text = voice.ToString();
                                     tsi.Click += (x, args) =>
                                     {
                                         var a = (ActorAndVoice)(x as ToolStripItem).Tag;
                                         SetActor(a);
                                     };
-                                    parent.DropDownItems.Add(tsi);
-                                }
-
-                                if (Configuration.Settings.General.UseDarkTheme)
-                                {
-                                    DarkTheme.SetDarkTheme(parent);
-                                }
-                            }
-                        }
-                    }
-                    if (engine.Id == TextToSpeechEngineId.AzureTextToSpeech)
-                    {
-                        var voices = _azureVoices;
-                        foreach (var voiceLanguage in voices
-                                     .GroupBy(p => p.Locale.Substring(0, 2))
-                                     .OrderBy(p => p.Key))
-                        {
-                            if (voiceLanguage.Count() == 1)
-                            {
-                                var voice = voiceLanguage.First();
-                                var tsi = new ToolStripMenuItem();
-                                tsi.Tag = new ActorAndVoice { Voice = voice.ToString(), VoiceIndex = voices.IndexOf(voice) };
-                                tsi.Text = voice.ToString();
-                                tsi.Click += (x, args) =>
-                                {
-                                    var a = (ActorAndVoice)(x as ToolStripItem).Tag;
-                                    SetActor(a);
-                                };
-                                contextMenuStripActors.Items.Add(tsi);
-                            }
-                            else
-                            {
-                                if (voiceLanguage.Count() < 30)
-                                {
-                                    var parent = new ToolStripMenuItem();
-                                    parent.Text = voiceLanguage.Key;
-                                    contextMenuStripActors.Items.Add(parent);
-                                    var tsiList = new List<ToolStripItem>(nikseComboBoxVoice.Items.Count);
-                                    foreach (var voice in voiceLanguage.OrderBy(p => p.ToString()).ToList())
-                                    {
-                                        var tsi = new ToolStripMenuItem();
-                                        tsi.Tag = new ActorAndVoice { Voice = voice.ToString(), VoiceIndex = voices.IndexOf(voice) };
-                                        tsi.Text = voice.ToString();
-                                        tsi.Click += (x, args) =>
-                                        {
-                                            var a = (ActorAndVoice)(x as ToolStripItem).Tag;
-                                            SetActor(a);
-                                        };
-                                        tsiList.Add(tsi);
-                                    }
-                                    parent.DropDownItems.AddRange(tsiList.ToArray());
-
-                                    if (Configuration.Settings.General.UseDarkTheme)
-                                    {
-                                        DarkTheme.SetDarkTheme(parent);
-                                    }
+                                    contextMenuStripActors.Items.Add(tsi);
                                 }
                                 else
                                 {
                                     var parent = new ToolStripMenuItem();
                                     parent.Text = voiceLanguage.Key;
                                     contextMenuStripActors.Items.Add(parent);
-                                    var subGroup = voiceLanguage.GroupBy(p => p.Locale);
-                                    foreach (var subGroupElement in subGroup)
+
+                                    foreach (var voice in voiceLanguage.OrderBy(p => p.Voice).ToList())
                                     {
-                                        var groupParent = new ToolStripMenuItem();
-                                        groupParent.Text = subGroupElement.Key;
-                                        parent.DropDownItems.Add(groupParent);
-                                        var tsiList = new List<ToolStripItem>(subGroupElement.Count());
-                                        foreach (var voice in subGroupElement.OrderBy(p => p.DisplayName).ToList())
+                                        var tsi = new ToolStripMenuItem();
+                                        tsi.Tag = new ActorAndVoice { Voice = voice.Voice, VoiceIndex = voices.IndexOf(voice) };
+                                        tsi.Text = voice.Voice + " (" + voice.Quality + ")";
+                                        tsi.Click += (x, args) =>
+                                        {
+                                            var a = (ActorAndVoice)(x as ToolStripItem).Tag;
+                                            SetActor(a);
+                                        };
+                                        parent.DropDownItems.Add(tsi);
+                                    }
+
+                                    if (Configuration.Settings.General.UseDarkTheme)
+                                    {
+                                        DarkTheme.SetDarkTheme(parent);
+                                    }
+                                }
+                            }
+                        }
+                        if (engine.Id == TextToSpeechEngineId.AzureTextToSpeech)
+                        {
+                            var voices = _azureVoices;
+                            foreach (var voiceLanguage in voices
+                                         .GroupBy(p => p.Locale.Substring(0, 2))
+                                         .OrderBy(p => p.Key))
+                            {
+                                if (voiceLanguage.Count() == 1)
+                                {
+                                    var voice = voiceLanguage.First();
+                                    var tsi = new ToolStripMenuItem();
+                                    tsi.Tag = new ActorAndVoice { Voice = voice.ToString(), VoiceIndex = voices.IndexOf(voice) };
+                                    tsi.Text = voice.ToString();
+                                    tsi.Click += (x, args) =>
+                                    {
+                                        var a = (ActorAndVoice)(x as ToolStripItem).Tag;
+                                        SetActor(a);
+                                    };
+                                    contextMenuStripActors.Items.Add(tsi);
+                                }
+                                else
+                                {
+                                    if (voiceLanguage.Count() < 30)
+                                    {
+                                        var parent = new ToolStripMenuItem();
+                                        parent.Text = voiceLanguage.Key;
+                                        contextMenuStripActors.Items.Add(parent);
+                                        var tsiList = new List<ToolStripItem>(nikseComboBoxVoice.Items.Count);
+                                        foreach (var voice in voiceLanguage.OrderBy(p => p.ToString()).ToList())
                                         {
                                             var tsi = new ToolStripMenuItem();
                                             tsi.Tag = new ActorAndVoice { Voice = voice.ToString(), VoiceIndex = voices.IndexOf(voice) };
@@ -1770,15 +1738,93 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                                             };
                                             tsiList.Add(tsi);
                                         }
-
-                                        groupParent.DropDownItems.AddRange(tsiList.ToArray());
+                                        parent.DropDownItems.AddRange(tsiList.ToArray());
 
                                         if (Configuration.Settings.General.UseDarkTheme)
                                         {
-                                            DarkTheme.SetDarkTheme(groupParent);
+                                            DarkTheme.SetDarkTheme(parent);
                                         }
-
                                     }
+                                    else
+                                    {
+                                        var parent = new ToolStripMenuItem();
+                                        parent.Text = voiceLanguage.Key;
+                                        contextMenuStripActors.Items.Add(parent);
+                                        var subGroup = voiceLanguage.GroupBy(p => p.Locale);
+                                        foreach (var subGroupElement in subGroup)
+                                        {
+                                            var groupParent = new ToolStripMenuItem();
+                                            groupParent.Text = subGroupElement.Key;
+                                            parent.DropDownItems.Add(groupParent);
+                                            var tsiList = new List<ToolStripItem>(subGroupElement.Count());
+                                            foreach (var voice in subGroupElement.OrderBy(p => p.DisplayName).ToList())
+                                            {
+                                                var tsi = new ToolStripMenuItem();
+                                                tsi.Tag = new ActorAndVoice { Voice = voice.ToString(), VoiceIndex = voices.IndexOf(voice) };
+                                                tsi.Text = voice.ToString();
+                                                tsi.Click += (x, args) =>
+                                                {
+                                                    var a = (ActorAndVoice)(x as ToolStripItem).Tag;
+                                                    SetActor(a);
+                                                };
+                                                tsiList.Add(tsi);
+                                            }
+
+                                            groupParent.DropDownItems.AddRange(tsiList.ToArray());
+
+                                            if (Configuration.Settings.General.UseDarkTheme)
+                                            {
+                                                DarkTheme.SetDarkTheme(groupParent);
+                                            }
+
+                                        }
+                                        if (Configuration.Settings.General.UseDarkTheme)
+                                        {
+                                            DarkTheme.SetDarkTheme(parent);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (engine.Id == TextToSpeechEngineId.ElevenLabs)
+                        {
+                            var voices = _elevenLabVoices;
+                            foreach (var voiceLanguage in voices
+                                         .GroupBy(p => p.Language)
+                                         .OrderBy(p => p.Key))
+                            {
+                                if (voiceLanguage.Count() == 1)
+                                {
+                                    var voice = voiceLanguage.First();
+                                    var tsi = new ToolStripMenuItem();
+                                    tsi.Tag = new ActorAndVoice { Voice = voice.Voice, VoiceIndex = voices.IndexOf(voice) };
+                                    tsi.Text = voice.ToString();
+                                    tsi.Click += (x, args) =>
+                                    {
+                                        var a = (ActorAndVoice)(x as ToolStripItem).Tag;
+                                        SetActor(a);
+                                    };
+                                    contextMenuStripActors.Items.Add(tsi);
+                                }
+                                else
+                                {
+                                    var parent = new ToolStripMenuItem();
+                                    parent.Text = voiceLanguage.Key;
+                                    contextMenuStripActors.Items.Add(parent);
+
+                                    foreach (var voice in voiceLanguage.OrderBy(p => p.Voice).ToList())
+                                    {
+                                        var tsi = new ToolStripMenuItem();
+                                        tsi.Tag = new ActorAndVoice { Voice = voice.Voice, VoiceIndex = voices.IndexOf(voice) };
+                                        tsi.Text = voice.Voice + " (" + voice.Gender + ")";
+                                        tsi.Click += (x, args) =>
+                                        {
+                                            var a = (ActorAndVoice)(x as ToolStripItem).Tag;
+                                            SetActor(a);
+                                        };
+                                        parent.DropDownItems.Add(tsi);
+                                    }
+
                                     if (Configuration.Settings.General.UseDarkTheme)
                                     {
                                         DarkTheme.SetDarkTheme(parent);
@@ -1786,100 +1832,54 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                                 }
                             }
                         }
-                    }
-                    else if (engine.Id == TextToSpeechEngineId.ElevenLabs)
-                    {
-                        var voices = _elevenLabVoices;
-                        foreach (var voiceLanguage in voices
-                                     .GroupBy(p => p.Language)
-                                     .OrderBy(p => p.Key))
+                        else if (engine.Id == TextToSpeechEngineId.AllTalk)
                         {
-                            if (voiceLanguage.Count() == 1)
+                            var tsiList = new List<ToolStripItem>(nikseComboBoxVoice.Items.Count);
+                            for (var index = 0; index < nikseComboBoxVoice.Items.Count; index++)
                             {
-                                var voice = voiceLanguage.First();
+                                var item = nikseComboBoxVoice.Items[index];
+
                                 var tsi = new ToolStripMenuItem();
-                                tsi.Tag = new ActorAndVoice { Voice = voice.Voice, VoiceIndex = voices.IndexOf(voice) };
-                                tsi.Text = voice.ToString();
+                                tsi.Tag = new ActorAndVoice { Voice = item.ToString(), VoiceIndex = index };
+                                tsi.Text = item.ToString();
                                 tsi.Click += (x, args) =>
                                 {
                                     var a = (ActorAndVoice)(x as ToolStripItem).Tag;
                                     SetActor(a);
                                 };
-                                contextMenuStripActors.Items.Add(tsi);
+                                tsiList.Add(tsi);
                             }
-                            else
+
+                            contextMenuStripActors.Items.AddRange(tsiList.ToArray());
+                        }
+                        else
+                        {
+                            var tsiList = new List<ToolStripItem>(nikseComboBoxVoice.Items.Count);
+                            for (var index = 0; index < nikseComboBoxVoice.Items.Count; index++)
                             {
-                                var parent = new ToolStripMenuItem();
-                                parent.Text = voiceLanguage.Key;
-                                contextMenuStripActors.Items.Add(parent);
+                                var item = nikseComboBoxVoice.Items[index];
 
-                                foreach (var voice in voiceLanguage.OrderBy(p => p.Voice).ToList())
+                                var tsi = new ToolStripMenuItem();
+                                tsi.Tag = new ActorAndVoice { Voice = item.ToString(), VoiceIndex = index };
+                                tsi.Text = item.ToString();
+                                tsi.Click += (x, args) =>
                                 {
-                                    var tsi = new ToolStripMenuItem();
-                                    tsi.Tag = new ActorAndVoice { Voice = voice.Voice, VoiceIndex = voices.IndexOf(voice) };
-                                    tsi.Text = voice.Voice + " (" + voice.Gender + ")";
-                                    tsi.Click += (x, args) =>
-                                    {
-                                        var a = (ActorAndVoice)(x as ToolStripItem).Tag;
-                                        SetActor(a);
-                                    };
-                                    parent.DropDownItems.Add(tsi);
-                                }
-
-                                if (Configuration.Settings.General.UseDarkTheme)
-                                {
-                                    DarkTheme.SetDarkTheme(parent);
-                                }
+                                    var a = (ActorAndVoice)(x as ToolStripItem).Tag;
+                                    SetActor(a);
+                                };
+                                tsiList.Add(tsi);
                             }
-                        }
-                    }
-                    else if (engine.Id == TextToSpeechEngineId.AllTalk)
-                    {
-                        var tsiList = new List<ToolStripItem>(nikseComboBoxVoice.Items.Count);
-                        for (var index = 0; index < nikseComboBoxVoice.Items.Count; index++)
-                        {
-                            var item = nikseComboBoxVoice.Items[index];
 
-                            var tsi = new ToolStripMenuItem();
-                            tsi.Tag = new ActorAndVoice { Voice = item.ToString(), VoiceIndex = index };
-                            tsi.Text = item.ToString();
-                            tsi.Click += (x, args) =>
-                            {
-                                var a = (ActorAndVoice)(x as ToolStripItem).Tag;
-                                SetActor(a);
-                            };
-                            tsiList.Add(tsi);
+                            contextMenuStripActors.Items.AddRange(tsiList.ToArray());
                         }
 
-                        contextMenuStripActors.Items.AddRange(tsiList.ToArray());
+                        labelActors.Visible = true;
+                        listViewActors.Visible = true;
+                        _actorsOn = true;
                     }
-                    else
-                    {
-                        var tsiList = new List<ToolStripItem>(nikseComboBoxVoice.Items.Count);
-                        for (var index = 0; index < nikseComboBoxVoice.Items.Count; index++)
-                        {
-                            var item = nikseComboBoxVoice.Items[index];
-
-                            var tsi = new ToolStripMenuItem();
-                            tsi.Tag = new ActorAndVoice { Voice = item.ToString(), VoiceIndex = index };
-                            tsi.Text = item.ToString();
-                            tsi.Click += (x, args) =>
-                            {
-                                var a = (ActorAndVoice)(x as ToolStripItem).Tag;
-                                SetActor(a);
-                            };
-                            tsiList.Add(tsi);
-                        }
-
-                        contextMenuStripActors.Items.AddRange(tsiList.ToArray());
-                    }
-
-                    labelActors.Visible = true;
-                    listViewActors.Visible = true;
-                    _actorsOn = true;
                 }
             }
-        }
+        }   
 
         private void FillElevenLabsLanguages(string model)
         {
