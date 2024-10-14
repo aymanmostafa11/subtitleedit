@@ -186,6 +186,32 @@ namespace Nikse.SubtitleEdit.Forms.Tts
             checkBoxShowPreview.Checked = Configuration.Settings.Tools.TextToSpeechPreview;
             checkBoxAudioEncoding.Checked = Configuration.Settings.Tools.TextToSpeechCustomAudio;
             checkBoxAddToVideoFile.Enabled = _videoFileName != null;
+
+            
+            label_stability.Visible = false;
+            nikseTextBoxStability.Visible = false;
+
+            label_similarity.Visible = false;
+            nikseTextBoxSimilarity.Visible = false;
+
+            label_style.Visible = false;
+            nikseTextBoxStyle.Visible = false;
+
+            label_speaker_boost.Visible = false;
+            checkBoxSpeakerBoost.Visible = false;
+
+            label_context.Visible = false;
+            checkBoxContext.Visible = false;
+            context_tooltip.SetToolTip(label_context, "Sends previous and next subtitles in the TTS request for better context awareness");
+
+            label_char_count.Visible = false;
+            int characters_count = 0;
+            foreach (var p in subtitle.Paragraphs)
+            {
+                characters_count += p.Text.Length;
+            }
+            char_count.Text = characters_count.ToString();
+            char_count.Visible = false;
         }
 
         private void SetActor(ActorAndVoice actor)
@@ -1116,14 +1142,53 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                         }
                     }
 
-                    var voice = voices.First(x => x.ToString() == v);
+                var voice = voices.First(x => x.ToString() == v);
+                var stability = nikseTextBoxStability.Text;
+                var similarity = nikseTextBoxSimilarity.Text;
+                var style = nikseTextBoxStyle.Text;
+                var speaker_boost = checkBoxSpeakerBoost.Checked ? "true" : "false";
+                bool add_context = checkBoxContext.Checked;
 
-                    var url = "https://api.elevenlabs.io/v1/text-to-speech/" + voice.Model;
-                    var text = Utilities.UnbreakLine(p.Text);
-                    var model = nikseComboBoxRegion.Text;
+                var context_text = "";
+                if (add_context & subtitle.Paragraphs.Count > 1)
+                {
+                    context_text += ",";
+                    var previous_text = "";
+                    var next_text = "";
+                    if (index == 0)
+                    {
+                        next_text = subtitle.Paragraphs[index + 1].Text;
 
-                    var language = string.Empty;
-                    if (model == "eleven_turbo_v2_5")
+                    }
+                    else if (index == subtitle.Paragraphs.Count - 1)
+                    {
+                        previous_text = subtitle.Paragraphs[index - 1].Text;
+                    }
+                    else
+                    {
+                        next_text = subtitle.Paragraphs[index + 1].Text;
+                        previous_text = subtitle.Paragraphs[index - 1].Text;
+                    }
+
+
+                    if (!String.IsNullOrEmpty(previous_text))
+                        context_text += "\"previous_text\":\"" + previous_text + "\"";
+
+
+                    if (!String.IsNullOrEmpty(next_text))
+                    {
+                        if (!String.IsNullOrEmpty(previous_text))
+                            context_text += ",";
+                        context_text += "\"next_text\":\"" + next_text + "\"";
+                    }
+                }
+                var url = "https://api.elevenlabs.io/v1/text-to-speech/" + voice.Model;
+                var text = Utilities.UnbreakLine(p.Text);
+                var data = "{ \"text\": \"" + Json.EncodeJsonText(text) + "\", \"model_id\": \"eleven_multilingual_v2\", \"voice_settings\": { \"stability\": 0.8, \"similarity_boost\": 1.0 } }";
+                var content = new StringContent(data, Encoding.UTF8);
+                content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+                var result = httpClient.PostAsync(url, content, CancellationToken.None).Result;
+                var bytes = result.Content.ReadAsByteArrayAsync().Result;
                     {
                         if (nikseComboBoxLanguage.SelectedItem is TranslationPair tp)
                         {
@@ -1462,6 +1527,24 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                 labelApiKey.Visible = true;
                 nikseTextBoxApiKey.Visible = true;
 
+                label_stability.Visible = true;
+                nikseTextBoxStability.Visible = true;
+
+                label_similarity.Visible = true;
+                nikseTextBoxSimilarity.Visible = true;
+
+                label_style.Visible = true;
+                nikseTextBoxStyle.Visible = true;
+
+                label_speaker_boost.Visible = true;
+                checkBoxSpeakerBoost.Visible = true;
+
+                label_context.Visible = true;
+                checkBoxContext.Visible = true;
+
+                label_char_count.Visible = true;
+                char_count.Visible = true;
+
                 if (_elevenLabVoices.Count == 0)
                 {
                     _elevenLabVoices.AddRange(GetElevenLabVoices(true));
@@ -1479,6 +1562,8 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                 nikseComboBoxRegion.Items.Add("eleven_multilingual_v2");
 
                 nikseComboBoxRegion.Text = Configuration.Settings.Tools.TextToSpeechElevenLabsModel;
+                if (nikseComboBoxRegion.SelectedIndex < 0)
+                {
                 if (nikseComboBoxRegion.SelectedIndex < 0)
                 {
                     nikseComboBoxRegion.SelectedIndex = 1;
@@ -2458,6 +2543,25 @@ namespace Nikse.SubtitleEdit.Forms.Tts
             {
                 Cursor = Cursors.Default;
             }
+        }
+
+        private void checkBoxContext_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this._subtitle.Paragraphs.Count() == 0)
+                return;
+
+            var count = Int32.Parse(char_count.Text);
+            int avg_chars_per_paragraph = count / this._subtitle.Paragraphs.Count();
+            if (checkBoxContext.Checked)
+            {
+                count = count * 3 - 2 * avg_chars_per_paragraph;
+            }
+            else
+            {
+                count = _subtitle.CharacterCount;
+            }
+            char_count.Text = count.ToString();
+
         }
 
         private void linkLabelCustomAudio_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
