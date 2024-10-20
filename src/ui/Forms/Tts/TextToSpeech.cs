@@ -1179,7 +1179,7 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                         }
                     }
 
-                    var data = "{ \"text\": \"" + Json.EncodeJsonText(text) + $"\", \"model_id\": \"{model}\"{language}, \"voice_settings\": {{ \"stability\": 0.8, \"similarity_boost\": 1.0 }} }}";
+                    var data = "{ \"text\": \"" + Json.EncodeJsonText(text) + $"\", \"model_id\": \"{model}\"{language}, \"voice_settings\": {{ \"stability\": {stability}, \"similarity_boost\": {similarity} , \"style\": {style}, \"use_speaker_boost\": {speaker_boost} }} {context_text}}}";
                     var content = new StringContent(data, Encoding.UTF8);
                     content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
                     var result = httpClient.PostAsync(url, content, CancellationToken.None).Result;
