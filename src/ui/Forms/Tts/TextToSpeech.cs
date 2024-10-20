@@ -329,7 +329,7 @@ namespace Nikse.SubtitleEdit.Forms.Tts
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Ups: " + exception.Message + Environment.NewLine + exception.Message);
+                MessageBox.Show("Oops: " + exception.Message + Environment.NewLine + exception.Message);
                 SeLogger.Error(exception, $"{Text}: Error running engine {nikseComboBoxEngine.Text} with video {_videoFileName}");
             }
         }
@@ -1943,15 +1943,15 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                 Directory.CreateDirectory(ttsPath);
             }
 
-            var elevenLabsPath = Path.Combine(ttsPath, "Piper");
-            if (!Directory.Exists(elevenLabsPath))
+            var piperPath = Path.Combine(ttsPath, "Piper");
+            if (!Directory.Exists(piperPath))
             {
-                Directory.CreateDirectory(elevenLabsPath);
+                Directory.CreateDirectory(piperPath);
             }
 
             var result = new List<PiperModel>();
 
-            var jsonFileName = Path.Combine(elevenLabsPath, "voices.json");
+            var jsonFileName = Path.Combine(piperPath, "voices.json");
 
             if (!File.Exists(jsonFileName))
             {
@@ -1968,7 +1968,7 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                             if (!string.IsNullOrEmpty(fileName))
                             {
                                 var name = entry.FilenameInZip;
-                                var path = Path.Combine(elevenLabsPath, name.Replace('/', Path.DirectorySeparatorChar));
+                                var path = Path.Combine(piperPath, name.Replace('/', Path.DirectorySeparatorChar));
                                 zip.ExtractFile(entry, path);
                             }
                         }
@@ -2283,7 +2283,7 @@ namespace Nikse.SubtitleEdit.Forms.Tts
                 var ok = GenerateParagraphAudio(sub, false, waveFileNameOnly);
                 if (!ok)
                 {
-                    MessageBox.Show(this, "Ups, voice generation failed!");
+                    MessageBox.Show(this, "Oops, voice generation failed!");
                     return;
                 }
 
@@ -2456,6 +2456,7 @@ namespace Nikse.SubtitleEdit.Forms.Tts
             }
             else if (engine.Id == TextToSpeechEngineId.ElevenLabs)
             {
+                _elevenLabVoices.Clear();
                 GetElevenLabVoices(false);
                 nikseComboBoxEngine_SelectedIndexChanged(null, null);
             }
